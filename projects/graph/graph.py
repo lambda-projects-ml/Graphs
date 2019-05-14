@@ -89,21 +89,45 @@ class Graph:
             if neighbor not in visited:
                 self.dft_recursive(neighbor, visited)
 
-    def bfs(self, starting_vertex, destination_vertex, visited=None):
+    def bfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing the shortest path from
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        if visited is None:
-            visited = []
+        # keep track of visited nodes
+        visited = []
+        # keep track of all the paths to be checked
+        queue = [[starting_vertex]]
 
+        # return path if starting_vertex is goal
         if starting_vertex == destination_vertex:
-            visited.append(starting_vertex)
-            return
-        else:
-            for neighbor in self.vertices[starting_vertex]:
-                self.bfs(neighbor, destination_vertex, visited)
+            return "That was easy! starting_vertex = destination_vertex"
+
+        # keeps looping until all possible paths have been checked
+        while queue:
+            # pop the first path from the queue
+            path = queue.pop(0)
+            # print(path)
+            # get the last node from the path
+            node = path[-1]
+            # print(node)
+            if node not in visited:
+                # go through all neighbour nodes, construct a new path and
+                # push it into the queue
+                for neighbour in self.vertices[node]:
+                    new_path = list(path)
+                    new_path.append(neighbour)
+                    queue.append(new_path)
+                    # return path if neighbour is destination_vertex
+                    if neighbour == destination_vertex:
+                        return new_path
+
+                # mark node as visited
+                visited.append(node)
+
+        # in case there's no path between the 2 nodes
+        return "So sorry, but a connecting path doesn't exist :("
 
     def dfs(self, starting_vertex, destination_vertex):
         """
