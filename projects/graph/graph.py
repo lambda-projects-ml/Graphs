@@ -102,7 +102,7 @@ class Graph:
 
         # return path if starting_vertex is goal
         if starting_vertex == destination_vertex:
-            return "That was easy! starting_vertex = destination_vertex"
+            return "Starting and destination are the same"
 
         # keeps looping until all possible paths have been checked
         while queue:
@@ -127,7 +127,7 @@ class Graph:
                 visited.append(node)
 
         # in case there's no path between the 2 nodes
-        return "So sorry, but a connecting path doesn't exist :("
+        return "No path available"
 
     def dfs(self, starting_vertex, destination_vertex):
         """
