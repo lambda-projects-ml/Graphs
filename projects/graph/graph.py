@@ -141,7 +141,6 @@ class Graph:
         while s.size() > 0:
             v = s.pop()
             if v not in visited and destination_vertex not in visited:
-                print(v)
                 visited.append(v)
                 for neighbor in self.vertices[v]:
                     s.push(neighbor)
