@@ -1,4 +1,5 @@
 import random
+import statistics
 
 
 class User:
@@ -105,12 +106,16 @@ class SocialGraph:
 
                     marked.append(node)
 
+        length = []
+        for i in visited:
+            length.append(len(visited[i]))
+        print(statistics.mean(length))
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populateGraph(10, 2)
-    print('Friendships: ', sg.friendships)
+    sg.populateGraph(1000, 5)
+    # print('Friendships: ', sg.friendships)
     connections = sg.getAllSocialPaths(1)
     print('Connections: ', connections)
