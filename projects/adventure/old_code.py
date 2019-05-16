@@ -112,3 +112,62 @@ bft(player.currentRoom.id)
 
 # # exits = player.currentRoom.getExits()
 # # print(exits) # produces a list
+
+
+
+
+
+
+
+
+
+
+
+=========================================
+
+graph ={0: {'n': 1, 's': None, 'w': None, 'e': None}, 1: {'n': 2, 's': 0}, 2: {'s': 1}}
+
+def reverseDirection(direction):
+    if direction == "n":
+        return 's'
+    elif direction == "s":
+        return 'n'
+    elif direction == "e":
+        return 'w'
+    elif direction == "w":
+        return 'e'
+
+def bfs(starting_room, destination_room):
+    # keep track of visited rooms
+    visited = []
+    directions=[]
+    # keep track of all the paths to be checked
+    queue = [[starting_room]]
+
+    # keeps looping until all possible paths have been checked
+    while queue:
+        # pop the first path from the queue
+        path = queue.pop(0)
+        # print('path: ',path)
+        # print(path)
+        # get the last node from the path
+        node = path[-1]
+        # print('node: ',node)
+        # print('graph[node] :',graph[node])
+        if node not in visited:
+            # go through all neighbour nodes, construct a new path and
+            # push it into the queue
+            for k,v in graph[node].items():
+                # print('neighbour: ',k,v)
+                new_path = list(path)
+                new_path.append(v)
+                d = reverseDirection(k)
+                queue.append(new_path)
+                # return path if neighbour is destination_room
+                if v == destination_room:
+                    return directions
+
+            
+            # mark node as visited
+            visited.append(node)
+print(bfs(2,0))
