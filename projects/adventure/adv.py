@@ -38,7 +38,6 @@ def destination(current_room):
             for k, v in graph[room].items():
                 s.append(v)
 
-
 def getFirstNone(room):
     if 'n' in graph[room]:
         if graph[room]['n'] is None:
@@ -52,7 +51,6 @@ def getFirstNone(room):
     if 'w' in graph[room]:
         if graph[room]['w'] is None:
             return 'w'
-
 
 def setRoom(prevRoom, direction):
     if direction == 'n':
@@ -68,7 +66,6 @@ def setRoom(prevRoom, direction):
         graph[prevRoom].update({'w': player.currentRoom.id})
         graph[player.currentRoom.id].update({'e': prevRoom})
 
-
 def reverseDirection(arr):
     path = []
     index = 0
@@ -80,7 +77,6 @@ def reverseDirection(arr):
     for i in path:
         player.travel(i)
         traversalPath.append(i)
-
 
 def bfs(starting_room, destination_room):
     visited = []
