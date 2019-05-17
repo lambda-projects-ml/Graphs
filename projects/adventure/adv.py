@@ -107,7 +107,10 @@ def bfs(starting_room, destination_room):
         # print('path: ',path)
         # print(path)
         # get the last node from the path
-        node = path[-1]
+        if path[-1] is None:
+            node = path[-2]
+        else:
+            node=path[-1]
         # print('node: ',node)
         # print('graph[node] :',graph[node])
         if node not in visited:
@@ -142,7 +145,7 @@ def dft(starting_rooom):
     # while len(visited) < 3: # PASSED
     # while len(visited) < 9: # PASSED
     # while len(visited) < 12:  # PASSED
-    # while len(visited) < 18: # PASSED
+    # while len(visited) < 18:  # PASSED - 26 moves
     while len(visited) < 500:
         # print('\n')
         # print('Visited: ', visited)
