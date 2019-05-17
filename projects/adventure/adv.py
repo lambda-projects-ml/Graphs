@@ -25,38 +25,18 @@ player = Player("Name", world.startingRoom)
 traversalPath = []
 graph = {}
 
-# graph = {0: {'n': None, 's': 3, 'w': 5, 'e': 2},1: {'n': 3, 's':0, 'w': None, 'e': 8}}
-
-
 def destination(current_room):
     s = []
-    # Create an empty Visited set
     visited = []
-    # Push the starting vertex to the stack
     s.append(current_room)
-    # While the Stack is not empty...
     while len(s) > 0:
-        # Pop the first vertex
-        room = s.pop()
-        # If it has not been visited...
+        room = s.pop(0)
         if room not in visited:
             if getFirstNone(room):
-                # print('Destination GetFirstNone: ', room, getFirstNone(room))
                 return room
-            # Mark it as visited (print it and add it to the visited set)
             visited.append(room)
-            # Then push each of its neighbors onto the Stack
             for k, v in graph[room].items():
                 s.append(v)
-
-    # for i in graph:
-    #     # print(i,graph[i].items())
-    #     for k, v in graph[i].items():
-    #         if None == v:
-    #             return (i)
-
-
-# print(destination())
 
 
 def getFirstNone(room):
@@ -92,108 +72,65 @@ def reverseDirection(arr):
 
 
 def bfs(starting_room, destination_room):
-    # print('\nStart: ', starting_room)
-    # print('Destination: ', destination_room, '\n')
-    # keep track of visited rooms
     visited = []
     directions = []
-    # keep track of all the paths to be checked
     queue = [[starting_room]]
 
-    # keeps looping until all possible paths have been checked
     while queue:
-        # pop the first path from the queue
         path = queue.pop(0)
-        # print('path: ',path)
-        # print(path)
-        # get the last node from the path
         if path[-1] is None:
             node = path[-2]
         else:
             node=path[-1]
-        # print('node: ',node)
-        # print('graph[node] :',graph[node])
         if node not in visited:
-            # go through all neighbour nodes, construct a new path and
-            # push it into the queue
             for k, v in graph[node].items():
-                # print('neighbour: ',k,v)
                 new_path = list(path)
                 new_path.append(v)
                 directions.append(k)
-                #d = reverseDirection(k)
-
                 queue.append(new_path)
-                # return path if neighbour is destination_room
                 if v == destination_room:
                     return new_path
-
-            # mark node as visited
             visited.append(node)
-
 
 def dft(starting_rooom):
     graph[starting_rooom] = {}
 
+    prevRoom = 0
     visited = []
     visited.append(starting_rooom)
 
     for i in player.currentRoom.getExits():
         graph[starting_rooom].update({i: None})
-    # print("Graph Keys for 0: ", graph[0].keys())
 
-    # while len(visited) < 3: # PASSED
-    # while len(visited) < 9: # PASSED
-    # while len(visited) < 12:  # PASSED
-    # while len(visited) < 18:  # PASSED - 26 moves
-    while len(visited) < 500:
-        # print('\n')
-        # print('Visited: ', visited)
-        # print('Graph: ', graph)
-        print('Current Room', player.currentRoom.id)
-        print('Traversal Path Length: ', len(traversalPath))
-        # print('\n')
-        prevRoom = 0
-
-        # If current room has an exit with none set it to 'direction'
+    while len(visited) < len(roomGraph): # PASSED
         direction = getFirstNone(player.currentRoom.id)
-        # print('Direction: ', direction)
+
         if direction:
-            # if it does then set prev room to current room and move player
             prevRoom = player.currentRoom.id
-            if player.currentRoom.id not in visited:
-                for i in player.currentRoom.getExits():
+            if player.currentRoom.id not in visited: # If first time in the room
+                for i in player.currentRoom.getExits(): # Build the graph for the room
                     graph[starting_rooom].update({i: None})
+                    setRoom(prevRoom, direction) # Sets the directions between the prev room and current room
+            else: 
+                traversalPath.append(direction) # adds the direction the player will move the the traversal list
+                player.travel(direction) # travel to the first direction with None in the graph for the room
+                if player.currentRoom.id not in visited:
+                    graph[player.currentRoom.id] = {}
+                    visited.append(player.currentRoom.id)
+                    for i in player.currentRoom.getExits():
+                        graph[player.currentRoom.id].update({i: None})
+                        setRoom(prevRoom, direction) # Sets the directions between the prev room and current room
                 else:
                     setRoom(prevRoom, direction)
-            traversalPath.append(direction)
-            player.travel(direction)
-            if player.currentRoom.id not in visited:
-                graph[player.currentRoom.id] = {}
-                visited.append(player.currentRoom.id)
-                for i in player.currentRoom.getExits():
-                    graph[player.currentRoom.id].update({i: None})
-                    setRoom(prevRoom, direction)
-            else:
-                setRoom(prevRoom, direction)
         else:
-            x = destination(player.currentRoom.id)
-            rooms = bfs(player.currentRoom.id, x)  # returns a string of rooms
+            rooms = bfs(player.currentRoom.id, destination(player.currentRoom.id))  # returns a string of rooms
             path = reverseDirection(rooms)  # returns a string of directions
-            # print("ROOMS PATH: ", rooms)
-            # print("REVERSE PATH: ", path)
             for i in path:
                 player.travel(i)
                 traversalPath.append(i)
 
-            # update path directions for both rooms using setRooms(prevRoom, direction)
-            # Else do a breadth first search for a room with a direction of None
-            # get the path and move the player along the path
-
 
 dft(player.currentRoom.id)
-# print('Graph: ', graph)
-# print('Traversal Path: ', traversalPath)
 
 # TRAVERSAL TEST
 print('\n********** Traversal Test ********** \n')
