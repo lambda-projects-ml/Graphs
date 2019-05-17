@@ -40,9 +40,18 @@ def destination(current_room):
 
 
 def getFirstNone(room):
-    for k, v in graph[room].items():
-        if None == v:
-            return (k)
+    if 'n' in graph[room]:
+        if graph[room]['n'] is None:
+            return 'n'
+    if 'e' in graph[room]:
+        if graph[room]['e'] is None:
+            return 'e'
+    if 's' in graph[room]:
+        if graph[room]['s'] is None:
+            return 's'
+    if 'w' in graph[room]:
+        if graph[room]['w'] is None:
+            return 'w'
 
 
 def setRoom(prevRoom, direction):
@@ -68,7 +77,9 @@ def reverseDirection(arr):
             if v == arr[index+1]:
                 path.append(k)
         index += 1
-    return path
+    for i in path:
+        player.travel(i)
+        traversalPath.append(i)
 
 
 def bfs(starting_room, destination_room):
@@ -79,31 +90,30 @@ def bfs(starting_room, destination_room):
     while queue:
         path = queue.pop(0)
         if path[-1] is None:
-            node = path[-2]
+            room = path[-2]
         else:
-            node=path[-1]
-        if node not in visited:
-            for k, v in graph[node].items():
+            room=path[-1]
+        if room not in visited:
+            for k, v in graph[room].items():
                 new_path = list(path)
                 new_path.append(v)
                 directions.append(k)
                 queue.append(new_path)
                 if v == destination_room:
                     return new_path
-            visited.append(node)
+            visited.append(room)
 
 def dft(starting_rooom):
     graph[starting_rooom] = {}
-
     prevRoom = 0
     visited = []
     visited.append(starting_rooom)
 
-    for i in player.currentRoom.getExits():
+    for i in player.currentRoom.getExits(): # builds graph for first room
         graph[starting_rooom].update({i: None})
 
-    while len(visited) < len(roomGraph): # PASSED
-        direction = getFirstNone(player.currentRoom.id)
+    while len(visited) < len(roomGraph):
+        direction = getFirstNone(player.currentRoom.id) # gets the first direction that is set to None
 
         if direction:
             prevRoom = player.currentRoom.id
@@ -124,10 +134,8 @@ def dft(starting_rooom):
                     setRoom(prevRoom, direction)
         else:
             rooms = bfs(player.currentRoom.id, destination(player.currentRoom.id))  # returns a string of rooms
-            path = reverseDirection(rooms)  # returns a string of directions
-            for i in path:
-                player.travel(i)
-                traversalPath.append(i)
+            reverseDirection(rooms)  # moves player through the rooms
+            
 
 
 dft(player.currentRoom.id)
